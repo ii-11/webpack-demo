@@ -7,14 +7,16 @@ import printMe from "./print.js";
 function component() {
   const element = document.createElement("div");
   const btn = document.createElement("button");
+  const br = document.createElement("br");
 
   // Lodash, now imported by this script
   element.innerHTML = _.join(["Hello", "webpack"], " ");
   element.classList.add("hello");
 
   btn.innerHTML = "Click me and check the console!";
-  btn.onclick = printMe;
+  // btn.onclick = printMe;
 
+  element.appendChild(br);
   element.appendChild(btn);
 
   // Add the image to our existing div.
@@ -26,6 +28,15 @@ function component() {
 
   // console.log("READDATA:");
   // console.log(Data);
+
+  // Note that because a network request is involved, some indication
+  // of loading would need to be shown in a production-level site/app.
+  btn.onclick = (e) =>
+    import(/* webpackChunkName: "print" */ "./print").then((module) => {
+      const print = module.default;
+
+      print();
+  });
 
   return element;
 }

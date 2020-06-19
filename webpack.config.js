@@ -5,24 +5,40 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   mode: "development",
   entry: {
-    app: "./src/index.js",
+    index: "./src/index.js",
     // print: "./src/print.js",
+    another: "./src/another-module.js",
   },
   devtool: "inline-source-map",
   devServer: {
     contentBase: "./dist",
-    hot: true
+    hot: true,
   },
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     new HtmlWebpackPlugin({
-      title: "Output Management",
+      title: "Caching",
     }),
   ],
   output: {
-    filename: "[name].bundle.js",
+    filename: "[name].[contenthash].js",
+    // chunkFilename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: '/',
+    publicPath: "/",
+  },
+  optimization: {
+    splitChunks: {
+      // chunks: "all",
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          chunks: "all",
+        },
+      },
+    },
+    runtimeChunk: "single",
+    moduleIds: 'hashed',
   },
   module: {
     rules: [
